@@ -22,7 +22,7 @@ donde $S$ son las sustituciones (palabras que se confunden con otras), $D$ son l
 
     En este punto conviene preguntarse si no existe un corpus en español que nos permita hacer todo esto pero... en español. \textbf{NO EXISTE} un corpus público que sea ad-hoc para ATC en español. Existen bases de datos de corpus generales (\textbf{Mozilla Common Voice} \cite{ardila2020common}, \textbf{VoxPopuli} \cite{wang-etal-2021-voxpopuli})
 
-    \item \textbf{A Virtual Simulation-Pilot Agent for Training of Air Traffic Controllers} \cite{Zuluaga‑Gomez2023Virtual} 
+    \item \textbf{A Virtual Simulation-Pilot Agent for Training of Air Traffic Controllers} \cite{Zuluaga-Gomez2023Virtual} 
     
     \begin{itemize}
         \item \textbf{APUNTE: } no tanto que ver con ASR, pero se asegura que la pipeline se construye solo con Open Source. 
@@ -33,5 +33,5 @@ donde $S$ son las sustituciones (palabras que se confunden con otras), $D$ son l
         \item \textbf{Wav2Vec2.0 [NO RIGUROSO]} \cite{DBLP:journals/corr/abs-2006-11477}. Para entender esta herramienta explico lo que es el aprendizaje semi supervisado. Supongamos que un fragmento de audio está unívocamente determinado por una serie de informaciones auditivas $a_1, a_2, \ldots, a_n$. Digamos que cada uno de los vectores $a_i$ se compone de $m$ componentes (es decir, $a_i \in \mathbb{R}^m)$. Entonces, lo que hacemos es quitar algunos de los fragmentos de audio y dar al modelo a elegir entre ciertas opciones para rellenar el hueco vacío.
         \item \textbf{XLSR} Es una iniciativa por la que se entrena al modelo anterior en múltiples idiomas. Se utiliza \textit{Multilingual LibriSpeech} \cite{Pratap2020MLSAL} como corpus de entrenamiento.
     \end{itemize}
-    El \textbf{resultado} 
+    El \textbf{resultado} consiste
 \end{enumerate}

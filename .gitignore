@@ -17,6 +17,7 @@
 *.nav
 *.snm
 *.vrb
+*.bcf
 
 # Output files
 *.pdf
