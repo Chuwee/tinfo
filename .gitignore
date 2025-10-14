@@ -1,0 +1,40 @@
+# LaTeX intermediate and auxiliary files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fls
+*.fdb_latexmk
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.out
+*.toc
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+
+# Output files
+*.pdf
+*.dvi
+*.ps
+
+# Editors
+*~
+*.swp
+*.bak
+*.backup
+*.tmp
+
+# macOS metadata
+.DS_Store
+
+# VSCode config (optional)
+.vscode/
+
+# Latexmk cache
+latex.out/

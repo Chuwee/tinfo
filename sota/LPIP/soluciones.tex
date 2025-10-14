@@ -1,0 +1,35 @@
+\subsubsection{Enfoques actuales y soluciones}
+\begin{enumerate}
+\item \textbf{A Virtual Simulation-Pilot Agent for Training of Air Traffic Controllers} \cite{Zuluaga‑Gomez2023Virtual} 
+
+Se define un componente de \textit{high level parsing} y se le llama \textit{High Level Entity Parser} (HLEP). Cada una de las instrucciones transcritas se utiliza como entrada a este módulo, donde se extraen los campos comunes a todas las instrucciones ATC. Cada una de las entidades que se pueden extraer (en forma de valores etiquetados) se llama \textit{Named entity}. El reconocimiento de las \textit{Named entities} recibe el nombre de \textit{Named Entity Recognition}:
+
+\begin{itemize}
+    \item \textit{Callsign} (por ejemplo \texttt{Lima Echo Sierra 3 3 5} $\rightarrow$ \texttt{LES-335})
+    \item Comando del ATCO (mantener una altitud, orientarse con determinado ángulo...)
+    \item Valores de la instrucción
+\end{itemize}
+
+De esta manera, una transcripción del tipo
+
+\texttt{ryanair nine two bravo quebec turn right heading zero nine zero}
+
+se transforma en una instrucción etiquetada, de la forma
+
+\texttt{<callsign>}\textcolor{blue}{\texttt{ryanair nine two bravo quebec}}\texttt{</callsign>} 
+
+\texttt{<command>}\textcolor{red}{\texttt{turn right heading}}\texttt{</command>}
+
+\texttt{<value>}\textcolor{green}{\texttt{zero nine zero}}\texttt{</value>}
+
+Para esta tarea se emplea un Modelo de Lenguaje pre-entrenado y se sigue la estrategia de ajuste fino para la NER. El modelo utilizado fue BERT (\textit{Bidirectional Encoder Representations From Transformers}) (específicamente la versión pre-enetrenada \textbf{BERT-base-uncased}).
+
+Se ajustó a la tarea utilizando el corpus ATCO2 \cite{ATCO2_EndToEndCallsignRecognition2021}. Este \textit{dataset} es altamente conveniente para el \textit{fine-tuning} pues cuenta con transcripciones ya etiquetadas.
+
+En términos de los resultados, el sistema basado en \textbf{BERT} consiguió un resultado de precisión del \textbf{97,5\%} en detección de \textit{callsigns}, mientras que consiguió una del \textbf{82\%} en \textit{commands} y del \textbf{87,2\%} en \textit{values}.
+
+\item \textbf{Research on the Method of Air Traffic Control Instruction Keyword Extraction Based on the Roberta-Attention-BiLSTM-CRF Model} \cite{aerospace12050376}
+
+
+
+\end{enumerate}

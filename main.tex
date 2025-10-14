@@ -1,0 +1,51 @@
+\documentclass{article}
+\usepackage[backend=biber]{biblatex}
+\addbibresource{references.bib}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+\usepackage{biblatex}
+\usepackage{amssymb}
+\usepackage[spanish]{babel}
+\usepackage{xcolor}
+\DeclareUnicodeCharacter{202F}{\,}
+
+\title{TFG-pseudopilotos}
+\author{Ignacio de Miguel}
+\date{September 2025}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\section{Planteamiento inicial}
+El modelo que proponemos consiste en una \textit{pipeline} de cuatro elementos.
+\begin{enumerate}
+    \item El elemento de \textbf{captura y transcripción de voz}. En este entorno, tradicionalmente se le conoce como \textbf{ASR} (\textit{Automatic Speech Recognition}) \cite{Zuluaga‑Gomez2023Virtual}.
+    \item Un conversor de lenguaje a instrucciones de alto nivel (\textit{Language Parameter and Instruction Parser}).
+    \item Un módulo de interfaz de un simulador de vuelo.
+    \item Un módulo de respuesta (\textit{Response Handler})
+    \item Un módulo de TTS (\textit{Text-to-Speech})
+\end{enumerate}
+
+\input{sota/inicial}
+
+\subsection{\textit{Automatic Speech Recognition} (ASR)}
+
+\input{sota/asr/desafios}
+
+\input{sota/asr/datasets}
+
+\input{sota/asr/soluciones}
+
+\subsection{\textit{Language Parameter and Instruction Parser} (LPIP)}
+
+\input{sota/LPIP/desafios}
+
+\input{sota/LPIP/soluciones}
+
+\input{piloto-automatico}
+
+\printbibliography
+\end{document}
