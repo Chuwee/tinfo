@@ -1,0 +1,54 @@
+\section{Estudio del \textit{State of the Art} en pseudopilotos}
+
+\subsection{Definición del problema: ¿qué es un pseudopiloto?}
+Existe una parte práctica de entrenamiento para el control aéreo que consiste en \textbf{simular} escenarios de entrenamiento.
+
+En los ejercicios de entrenamiento para control aéreo existen dos individuos que se comunican~\cite{eurocontrol:remote-piloting-2021}.
+El primero y más obvio es el aspirante a controlador aéreo, que comunica sus instrucciones para resolver la situación inicial del escenario de entrenamiento.
+
+El segundo es en quien centramos nuestro interés: el \textbf{pseudopiloto}. Se encarga de ejecutar las instrucciones del controlador aéreo a través de herramientas de simulación de escenarios.
+
+Como ya hemos mencionado, su principal uso es el de entrenamiento, aunque recientemente vemos una aparición más creciente en otros contextos, como la validación de novedades técnicas para su uso
+en control aéreo real. Un pseudopiloto hace las `veces de piloto', escuchando, ejecutando y respondiendo al controlador aéreo, incluso haciéndose cargo de la simulación de múltiples aeronaves.
+
+En general, todo sistema de pseudopilotos convencional sigue un esquema de funcionamiento como el que se ve en la Figura~\ref{fig:pseudopiloto-convencional}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.75\linewidth]{assets/pseudo-basico.png}
+    \caption{Esquema de funcionamiento de un pseudopiloto convencional: el controlador emite instrucciones, el pseudopiloto las ejecuta en el simulador y el entorno devuelve la retroalimentación.}
+\label{fig:pseudopiloto-convencional}
+\end{figure}
+
+
+
+\subsection{Pseudopilotos tradicionales}
+
+\begin{itemize}
+  \item \textbf{ESCAPE (Eurocontrol)} \\
+  Incluye el módulo \textit{Pilot Working Position (PWP)}. Permite el control simultáneo de múltiples aeronaves con comandos de altitud, rumbo y velocidad. Soporta operación remota y está diseñado para simulaciones de radar avanzadas.
+
+  \item \textbf{PEGASUS (Eurocontrol Experimental Centre)} \\
+  Herramienta de investigación en gestión del tráfico aéreo. Integra interfaces para pseudopilotos en escenarios complejos y validación de procedimientos.
+
+  \item \textbf{Target Generation Facility (TGF, FAA)} \\
+  Utiliza el módulo \textit{SimPilot}. Ofrece interfaces específicas para cada fase del vuelo (salida, ruta, llegada). Ampliamente usado en centros de simulación de la FAA.
+
+  \item \textbf{ROSE (DFS Alemania)} \\
+  Sistema de simulación ATC que incorpora estaciones de pseudopiloto con comandos rápidos para maniobras básicas y avanzadas.
+
+  \item \textbf{ANSART Pilot Simulator} \\
+  Plataforma comercial con GUI simplificada, integración modular, y capacidad de preprogramar vuelos. Adecuado para academias privadas y ANSP.
+
+  \item \textbf{MicroNav BEST (Beginning to End for Simulation and Training)} \\
+  Sistema versátil con módulos de torre, radar y pseudopiloto. Permite personalizar escenarios y comandos por interfaz gráfica.
+
+  \item \textbf{SACTA SIM (ENAIRE / Indra)} \\
+  Simulador ATC usado en España. Los pseudopilotos acceden a una interfaz conectada a la base de datos de tráfico simulada, con comandos compatibles con SACTA.
+
+  \item \textbf{ATCoach / SkyRadar} \\
+  Plataformas educativas que permiten control básico de aeronaves simuladas. Útiles en universidades y centros de formación inicial.
+\end{itemize}
+
+
+\subsection{Literatura reciente}
