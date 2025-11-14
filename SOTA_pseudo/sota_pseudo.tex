@@ -1,54 +1,122 @@
-\section{Estudio del \textit{State of the Art} en pseudopilotos}
+\section{Related work}
+One of the aspects of ATC training involves the \textbf{simulation} of training scenarios.
 
-\subsection{Definición del problema: ¿qué es un pseudopiloto?}
-Existe una parte práctica de entrenamiento para el control aéreo que consiste en \textbf{simular} escenarios de entrenamiento.
+Current training sessions for ATC consist of two individuals that communicate with each other \cite{eurocontrol:remote-piloting-2021}.
+The first and most obvious one is the aspiring ATC in training, that communicates their instructions to solve the initial situation of the aforementioned training scenario.
 
-En los ejercicios de entrenamiento para control aéreo existen dos individuos que se comunican~\cite{eurocontrol:remote-piloting-2021}.
-El primero y más obvio es el aspirante a controlador aéreo, que comunica sus instrucciones para resolver la situación inicial del escenario de entrenamiento.
+Our focus is centered in the second individual: the \textbf{pseudo-pilot}. They are in charge
+of executing the instructions the aspiring ATC communicated using scenario simulation tools.
 
-El segundo es en quien centramos nuestro interés: el \textbf{pseudopiloto}. Se encarga de ejecutar las instrucciones del controlador aéreo a través de herramientas de simulación de escenarios.
+As we have already mentioned, the main case of use of a pseudo-pilot is \textbf{ATC training}.
+Nevertheless, we have recently seen a rising tendency to use it in other contexts, such as
+the validation of novel techniques for their use in real ATC. A pseudo-pilot is the \textit{stand-in pilot},
+listening, executing and responding to the ATC's instructions. Furthermore, they may participate
+by simulating multiple aircrafts at the same time.
 
-Como ya hemos mencionado, su principal uso es el de entrenamiento, aunque recientemente vemos una aparición más creciente en otros contextos, como la validación de novedades técnicas para su uso
-en control aéreo real. Un pseudopiloto hace las `veces de piloto', escuchando, ejecutando y respondiendo al controlador aéreo, incluso haciéndose cargo de la simulación de múltiples aeronaves.
+Generally speaking, every conventional pseudo-pilot system follows a working schema like the one described in
+Figure~\ref{fig:pseudopiloto-convencional}
 
-En general, todo sistema de pseudopilotos convencional sigue un esquema de funcionamiento como el que se ve en la Figura~\ref{fig:pseudopiloto-convencional}
-
-\begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.75\linewidth]{assets/pseudo-basico.png}
-    \caption{Esquema de funcionamiento de un pseudopiloto convencional: el controlador emite instrucciones, el pseudopiloto las ejecuta en el simulador y el entorno devuelve la retroalimentación.}
-\label{fig:pseudopiloto-convencional}
+\begin{figure}[]
+	\centering
+	\includegraphics[width=1\linewidth]{assets/conventional-atc-diagram/traditional-pseudopilot.drawio.png}
+	\caption{Schema of a conventional pseudopilot. The ATC emits instructions via voice communication channels and the pseudopilot executes them in the simulator. Finally, the simulation framework returns the feedback to the aspiring ATC.}
+	\label{fig:pseudopiloto-convencional}
 \end{figure}
 
+A traditional pseudo-pilot typically includes a \textbf{Pseudo-pilot working position} which includes all pseudo-piloting tools. It's an accessible interface that allows users to control one or more aircrafts simultaneously, as well as edit the flight plans or other aspects of the simulation.
 
+A Voice Communication System is also in place, allowing the pseudo-pilot to communicate with the trainee ATC using realistic aviation phraseology. Lastly, the \textbf{traffic generation software} generates traffic and complex situations automatically for their resolution by the ATC.
 
-\subsection{Pseudopilotos tradicionales}
+In order to understand the context in which our proposal makes a difference, it is crucial to comprehend the current status of the pseudo-piloting industry.
+In more broad terms, we need to understand what the industry currently offers regarding ATC training. These systems define the industry standard and the tools that are used
+today by human pseudo-pilots. Table~\ref{tab:simuladores_pp} offers a comparative view of these tools.
 
+\begin{center}
+	\begin{longtable}{>{\bfseries}p{3.0cm}|p{3.0cm}|p{3.0cm}|p{4.5cm}}
+		\caption{Pseudo-pilot simulators summary}
+		\label{tab:simuladores_pp}
+		\\
+		\toprule
+		\textbf{Simulator (Provider)} & \textbf{Primary focus}                      & \textbf{Pseudo-pilot module}        & \textbf{Characteristics}                                                                                      \\
+		\midrule
+		\endfirsthead
+		\multicolumn{4}{c}%
+		{{\bfseries \tablename\ \thetable{} -- Continuation of Pseudo-pilot simulators summary}}                                                                                                                                          \\
+		\toprule
+		\textbf{Simulator (Provider)} & \textbf{Primary focus}                      & \textbf{Pseudo-pilot module}        & \textbf{Characteristics}                                                                                      \\
+		\midrule
+		\endhead
+		\bottomrule
+		\endfoot
+		\bottomrule
+		\endlastfoot
+
+		ESCAPE (Eurocontrol)          & Training and Investigation                  & PWP                                 & Simultaneous control of multiple aircrafts. Advanced radar simulator.                                         \\
+		\midrule
+		BEST (MicroNav)               & Industry Standard                           & Integrated                          & \textbf{3D and 2D} simulation of aircrafts and \textbf{atmospheric conditions}.                               \\
+		\midrule
+		CSSOFT ATC Simulator (CSSOFT) & Step minimizing                             & Designed to \textbf{minimize steps} & Allows \textbf{as many flights as possible}. Advanced \textbf{syntax resilience} (minimizes operator errors). \\
+		\midrule
+		ATCTrSim (HAVELSAN)           & Training                                    & Intuitive and accessible UI         & Prioritizes \textbf{ease of use} for pseudo-piloting in training scenarios.                                   \\
+		\midrule
+		MaxSim (ADACEL)               & Complete ATC Simulation                     & \textbf{PWP}                        & Simulations use \textbf{real airports}.                                                                       \\
+		\midrule
+		Indra Simulator (Indra)       & Allows tower, approach and en-route control & \textbf{PWP}                        & 2D and 3D training. Multi-scenario interface.                                                                 \\
+		\midrule
+		SERA (ASTi)                   & Realistic communications                    & \textbf{Artificial Intelligence}    & Utilizes AI systems for traffic management within the simulator and phraseology reinforcement.                \\
+	\end{longtable}
+\end{center}
+
+As we can see, solutions focus mainly on the features of each simulation software (2D and 3D, real airport usage, unlimited simultaneous flights...). The dominating paradigm in the industry revolves around the Pseudopilot Working Position. Tools like ESCAPE, MaxSim, or Indra's simulator are, essentially, advanced human interfaces that serve the purpose of providing a comfortable and realistic ATC training interface.
+Even more modern AI-using tools like SERA apply it to manage communications, and not for the execution of the ATC instructions. This Commercial State of the Art analysis shows that the current industry depends on a human agent for command execution. None of these platforms offers the ideal execution by voice, essentially removing the
+need for a human pseudopilot. This hints at the opportunity of the integration we propose.
+
+Although commercial solutions have not made any approaches that would resemble our proposal, the scientific literature has made some advances in the task of the pseudo-pilot automatization.
+
+The idea of a completely autonomous pseudo-pilot system is not entirely novel. In 2005, Bolczak et al. \cite{bolczak2005accommodating} already proposed a proof of concept that integrated primitive ASR and TTS modules.
+This early work was crucial, as it demonstrated a theoretical viability in automatizing the pseudo-pilot tasks completely. It did not become a standard due to the technical limitations of its time.
+
+Recently, advances in the technologies used in \cite{bolczak2005accommodating} have caused a resurgence in the interest to automatize the pseudo-pilot. Lin et al. \cite{LinEtAl} propose the start of a more modular approach, where we firstly focus on
+response generation for a pseudopilot. This would cause the human pseudo-pilot to only have to fulfill the ATC's instructions onto the flight simulation interface.
+
+Later research by Zuluaga-Gomez et al. \cite{Zuluaga-Gomez2023Virtual} provides a proof of concept that shows the automatization of the pseudo-pilot replies is possible. This means the pseudo-pilot would need to do less work, but it doesn't quite automate the full process. This begins to close the gap between the full automatization and the current state of the commercial systems.
+
+\subsection{Literatura y soluciones alternativas}
 \begin{itemize}
-  \item \textbf{ESCAPE (Eurocontrol)} \\
-  Incluye el módulo \textit{Pilot Working Position (PWP)}. Permite el control simultáneo de múltiples aeronaves con comandos de altitud, rumbo y velocidad. Soporta operación remota y está diseñado para simulaciones de radar avanzadas.
-
-  \item \textbf{PEGASUS (Eurocontrol Experimental Centre)} \\
-  Herramienta de investigación en gestión del tráfico aéreo. Integra interfaces para pseudopilotos en escenarios complejos y validación de procedimientos.
-
-  \item \textbf{Target Generation Facility (TGF, FAA)} \\
-  Utiliza el módulo \textit{SimPilot}. Ofrece interfaces específicas para cada fase del vuelo (salida, ruta, llegada). Ampliamente usado en centros de simulación de la FAA.
-
-  \item \textbf{ROSE (DFS Alemania)} \\
-  Sistema de simulación ATC que incorpora estaciones de pseudopiloto con comandos rápidos para maniobras básicas y avanzadas.
-
-  \item \textbf{ANSART Pilot Simulator} \\
-  Plataforma comercial con GUI simplificada, integración modular, y capacidad de preprogramar vuelos. Adecuado para academias privadas y ANSP.
-
-  \item \textbf{MicroNav BEST (Beginning to End for Simulation and Training)} \\
-  Sistema versátil con módulos de torre, radar y pseudopiloto. Permite personalizar escenarios y comandos por interfaz gráfica.
-
-  \item \textbf{SACTA SIM (ENAIRE / Indra)} \\
-  Simulador ATC usado en España. Los pseudopilotos acceden a una interfaz conectada a la base de datos de tráfico simulada, con comandos compatibles con SACTA.
-
-  \item \textbf{ATCoach / SkyRadar} \\
-  Plataformas educativas que permiten control básico de aeronaves simuladas. Útiles en universidades y centros de formación inicial.
+	\item \cite{Zuluaga-Gomez2023Virtual}
+	      proporciona una prueba de concepto que demuestra que se puede cambiar el paradigma actual a uno de (por lo menos) automatización de la respuesta del controlador. Esto supone una liberación de carga, pero no la automatización del proceso completo. Las tasas de error en sistemas como ASR y construcción de respuestas (WER) evolucionan cada vez más a un nivel aceptable.
 \end{itemize}
 
+En definitiva, se ha llegado a un modelo como lo que se puede ver en la Figura~\ref{fig:pseudopiloto-respuesta-convencional}. Proporciona los procesos de automatización de respuesta, pero no de ejecución de instrucciones.
 
-\subsection{Literatura reciente}
+\begin{figure}[htbp]
+	\centering
+	\includesvg[width=1\textwidth]{assets/diagram_semiautomated/diagrama.svg}
+	\caption{Esquema semiautomatizado propuesto para el proceso de pseudopilotaje, integrando módulos automáticos y respuesta supervisada.}
+	\label{fig:pseudopiloto-respuesta-convencional}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{assets/pseudopilot-semithere.png}
+	\caption{Esquema semiautomatizado propuesto para el proceso de pseudopilotaje, integrando módulos automáticos y respuesta supervisada.}
+	\label{fig:pseudopiloto-respuesta-convencional}
+\end{figure}
+
+\subsection{Propuesta actual}
+Nosotros proponemos un modelo que da un paso más, replicando el diagrama propuesto en la Figura~\ref{fig:pseudopiloto-full-auto}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{assets/pseudo-full-auto.png}
+	\caption{Esquema de pseudopilotaje completamente automatizado: el sistema recibe transmisiones de voz del controlador, las procesa mediante módulos ASR, comprensión de instrucciones y ejecuta acciones en el simulador de vuelo de forma autónoma, generando respuestas (TTS) sin intervención humana.}
+	\label{fig:pseudopiloto-full-auto}
+\end{figure}
+
+Esto proporciona una eliminación del componente humano, proporcionando ciertas ventajas:
+\begin{enumerate}
+	\item Menor requerimiento de esfuerzo humano para entrenar ATCs.
+	\item Mayor capacidad para escalar las simulaciones, permitiendo situaciones de control aéreo de un gran número de aeronaves sin apenas esfuerzo.
+	\item Plausible autonomía del pseudopiloto para complicar escenarios de control aéreo.
+	\item Mecanismo de validación automática para métodos de control aéreo.
+\end{enumerate}

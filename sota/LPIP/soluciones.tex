@@ -1,116 +1,116 @@
 \subsubsection{Enfoques actuales y soluciones}
 \begin{enumerate}
-\item \textbf{A Virtual Simulation-Pilot Agent for Training of Air Traffic Controllers} \cite{Zuluaga-Gomez2023Virtual} 
+	\item \textbf{A Virtual Simulation-Pilot Agent for Training of Air Traffic Controllers} \cite{Zuluaga-Gomez2023Virtual}
 
-Se define un componente de \textit{high level parsing} y se le llama \textit{High Level Entity Parser} (HLEP). Cada una de las instrucciones transcritas se utiliza como entrada a este módulo, donde se extraen los campos comunes a todas las instrucciones ATC. Cada una de las entidades que se pueden extraer (en forma de valores etiquetados) se llama \textit{Named entity}. El reconocimiento de las \textit{Named entities} recibe el nombre de \textit{Named Entity Recognition}:
+	      Se define un componente de \textit{high level parsing} y se le llama \textit{High Level Entity Parser} (HLEP). Cada una de las instrucciones transcritas se utiliza como entrada a este módulo, donde se extraen los campos comunes a todas las instrucciones ATC. Cada una de las entidades que se pueden extraer (en forma de valores etiquetados) se llama \textit{Named entity}. El reconocimiento de las \textit{Named entities} recibe el nombre de \textit{Named Entity Recognition}:
 
-\begin{itemize}
-    \item \textit{Callsign} (por ejemplo \texttt{Lima Echo Sierra 3 3 5} $\rightarrow$ \texttt{LES-335})
-    \item Comando del ATCO (mantener una altitud, orientarse con determinado ángulo...)
-    \item Valores de la instrucción
-\end{itemize}
+	      \begin{itemize}
+		      \item \textit{Callsign} (por ejemplo \texttt{Lima Echo Sierra 3 3 5} $\rightarrow$ \texttt{LES-335})
+		      \item Comando del ATCO (mantener una altitud, orientarse con determinado ángulo...)
+		      \item Valores de la instrucción
+	      \end{itemize}
 
-De esta manera, una transcripción del tipo
+	      De esta manera, una transcripción del tipo
 
-\texttt{ryanair nine two bravo quebec turn right heading zero nine zero}
+	      \texttt{ryanair nine two bravo quebec turn right heading zero nine zero}
 
-se transforma en una instrucción etiquetada, de la forma
+	      se transforma en una instrucción etiquetada, de la forma
 
-\texttt{<callsign>}\textcolor{blue}{\texttt{ryanair nine two bravo quebec}}\texttt{</callsign>} 
+	      \texttt{<callsign>}\textcolor{blue}{\texttt{ryanair nine two bravo quebec}}\texttt{</callsign>}
 
-\texttt{<command>}\textcolor{red}{\texttt{turn right heading}}\texttt{</command>}
+	      \texttt{<command>}\textcolor{red}{\texttt{turn right heading}}\texttt{</command>}
 
-\texttt{<value>}\textcolor{green}{\texttt{zero nine zero}}\texttt{</value>}
+	      \texttt{<value>}\textcolor{green}{\texttt{zero nine zero}}\texttt{</value>}
 
-Para esta tarea se emplea un Modelo de Lenguaje pre-entrenado y se sigue la estrategia de ajuste fino para la NER. El modelo utilizado fue BERT (\textit{Bidirectional Encoder Representations From Transformers}) (específicamente la versión pre-enetrenada \textbf{BERT-base-uncased}).
+	      Para esta tarea se emplea un Modelo de Lenguaje pre-entrenado y se sigue la estrategia de ajuste fino para la NER. El modelo utilizado fue BERT (\textit{Bidirectional Encoder Representations From Transformers}) (específicamente la versión pre-enetrenada \textbf{BERT-base-uncased}).
 
-Se ajustó a la tarea utilizando el corpus ATCO2 \cite{ATCO2_EndToEndCallsignRecognition2021}. Este \textit{dataset} es altamente conveniente para el \textit{fine-tuning} pues cuenta con transcripciones ya etiquetadas.
+	      Se ajustó a la tarea utilizando el corpus ATCO2 \cite{ATCO2_EndToEndCallsignRecognition2021}. Este \textit{dataset} es altamente conveniente para el \textit{fine-tuning} pues cuenta con transcripciones ya etiquetadas.
 
-En términos de los resultados, el sistema basado en \textbf{BERT} consiguió un resultado de precisión del \textbf{97,5\%} en detección de \textit{callsigns}, mientras que consiguió una del \textbf{82\%} en \textit{commands} y del \textbf{87,2\%} en \textit{values}.
+	      En términos de los resultados, el sistema basado en \textbf{BERT} consiguió un resultado de precisión del \textbf{97,5\%} en detección de \textit{callsigns}, mientras que consiguió una del \textbf{82\%} en \textit{commands} y del \textbf{87,2\%} en \textit{values}.
 
-\item \textbf{Research on the Method of Air Traffic Control Instruction Keyword Extraction Based on the Roberta-Attention-BiLSTM-CRF Model} \cite{aerospace12050376}
+	\item \textbf{Research on the Method of Air Traffic Control Instruction Keyword Extraction Based on the Roberta-Attention-BiLSTM-CRF Model} \cite{aerospace12050376}
 
-Surge porque los metodos anteriores fallaban en capturar dependencias contextuales entre distintos segmentos de comunicación ATC. Al parecer existe una dificultad para mantener la secuencia correcta de las palabras clave ATC. 
+	      Surge porque los metodos anteriores fallaban en capturar dependencias contextuales entre distintos segmentos de comunicación ATC. Al parecer existe una dificultad para mantener la secuencia correcta de las palabras clave ATC.
 
-Estos desafíos se abordan con un modelo que propone el propio artículo, \textbf{Roberta-Attention-BiLSTM-CRF model}. El modelo existente anteriormente (\textbf{Roberta-BiLSTM-CRF}) solo capturaba dependencias semánticas en la misma instrucción o segmento de instrucciones. El nuevo modelo captura la relevancia semántica entre muchos segmentos de instrucción.
+	      Estos desafíos se abordan con un modelo que propone el propio artículo, \textbf{Roberta-Attention-BiLSTM-CRF model}. El modelo existente anteriormente (\textbf{Roberta-BiLSTM-CRF}) solo capturaba dependencias semánticas en la misma instrucción o segmento de instrucciones. El nuevo modelo captura la relevancia semántica entre muchos segmentos de instrucción.
 
-Cuenta con lo que ellos llaman `Módulo de atención', lo que permite capturar la relación entre sucesivas instrucciones (y sus precedentes). Finalmente, cuenta con un módulo `BiLSTM' (\textit{Bidirectional Long Short-Term Memory}). Este es el módulo encargado de procesar la secuencia de atención bidireccionalmente para capturar las dependencias contextuales de los términos utilizados.
+	      Cuenta con lo que ellos llaman `Módulo de atención', lo que permite capturar la relación entre sucesivas instrucciones (y sus precedentes). Finalmente, cuenta con un módulo `BiLSTM' (\textit{Bidirectional Long Short-Term Memory}). Este es el módulo encargado de procesar la secuencia de atención bidireccionalmente para capturar las dependencias contextuales de los términos utilizados.
 
-Por último, también existe la capa CRF o \textit{Conditional Random Field}, que predice las palabras clave en el orden secuencial correcto. Establece dependencias secuenciales entre múltiples palabras clave.
+	      Por último, también existe la capa CRF o \textit{Conditional Random Field}, que predice las palabras clave en el orden secuencial correcto. Establece dependencias secuenciales entre múltiples palabras clave.
 
-Similarmente al modelo anterior, este modelo extrae los \textit{callsigns}, comandos, y valores. Adicionalmente, extrae lo que se llama `código de área ATC'. Este código de área ATC representa el espacio aéreo o área de control, por ejemplo `Barajas control'.
+	      Similarmente al modelo anterior, este modelo extrae los \textit{callsigns}, comandos, y valores. Adicionalmente, extrae lo que se llama `código de área ATC'. Este código de área ATC representa el espacio aéreo o área de control, por ejemplo `Barajas control'.
 
-Consideremos la siguiente instrucción ATC:
+	      Consideremos la siguiente instrucción ATC:
 
-\begin{center}
-\texttt{
-UAL215, Barajas Tower, cleared for take off, then contact departures
-}
-\end{center}
+	      \begin{center}
+		      \texttt{
+			      UAL215, Barajas Tower, cleared for take off, then contact departures
+		      }
+	      \end{center}
 
-El modelo BERT sin CRF o módulo de atención podría tener problemas para identificar los límites precisos de cada entidad. Quizá identificaría toda la instrucciónd después del espacio ATC `Barajas Tower' como una única instrucción.
+	      El modelo BERT sin CRF o módulo de atención podría tener problemas para identificar los límites precisos de cada entidad. Quizá identificaría toda la instrucciónd después del espacio ATC `Barajas Tower' como una única instrucción.
 
-Si bien podría identificarlas correctamente como dos instrucciones distintas, nada garantiza que sea capaz de conservar la secuencialidad de las instrucciones.
+	      Si bien podría identificarlas correctamente como dos instrucciones distintas, nada garantiza que sea capaz de conservar la secuencialidad de las instrucciones.
 
-Además, sin la contextualización bidireccional, quizá instrucciones más largas podrían perder la referencia del `callsign' original, haciendo que queden invalidadas.
+	      Además, sin la contextualización bidireccional, quizá instrucciones más largas podrían perder la referencia del `callsign' original, haciendo que queden invalidadas.
 
-En términos de \textbf{resultados}, el modelo con módulos Roberta-Attention-BiLSTM-CRF sobrepasó a cualquier otro modelo anterior que tuviera una configuración similar. En términos de precisión en la extracción de palabras clave, hablamos de un \textbf{89,5\%}, mientras que la puntuación de precisión de coincidencia de secuencia y F1 son de un \textbf{91,3\%} y \textbf{0,882} respectivamente.
+	      En términos de \textbf{resultados}, el modelo con módulos Roberta-Attention-BiLSTM-CRF sobrepasó a cualquier otro modelo anterior que tuviera una configuración similar. En términos de precisión en la extracción de palabras clave, hablamos de un \textbf{89,5\%}, mientras que la puntuación de precisión de coincidencia de secuencia y F1 son de un \textbf{91,3\%} y \textbf{0,882} respectivamente.
 
-La efectividad individual de cada componente se evidencia por la adición incrementativa de cada uno de ellos y su comparación de rendimiento visible en el artículo. El resumen se puede ver en el Cuadro~\ref{tab:resultados-modelos}
+	      La efectividad individual de cada componente se evidencia por la adición incrementativa de cada uno de ellos y su comparación de rendimiento visible en el artículo. El resumen se puede ver en el Cuadro~\ref{tab:resultados-modelos}
 
-\begin{table}[ht]
-    \centering
-    \caption{Resultados de modelos}
-    \label{tab:resultados-modelos}
-    \begin{tabular}{lcccc}
-    \toprule
-    \textbf{Model} & \textbf{Acc} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 Score} \\
-    \midrule
-    BiLSTM-CRF                               & 0.805 & 0.790 & 0.778 & 0.784 \\
-    Roberta-BiLSTM                           & 0.832 & 0.835 & 0.841 & 0.843 \\
-    Roberta-Attention-BiLSTM                 & 0.808 & 0.800 & 0.807 & 0.809 \\
-    Roberta-BiLSTM-CRF                       & 0.869 & 0.867 & 0.853 & 0.865 \\
-    BERT-BiLSTM-CRF                          & 0.865 & 0.867 & 0.863 & 0.865 \\
-    Roberta -LSTM-CRF                        & 0.855 & 0.878 & 0.832 & 0.845 \\
-    BERT-Attention-BiLSTM-CRF                & 0.886 & 0.881 & 0.875 & 0.871 \\
-    Roberta-Attention-BiLSTM-CRF             & 0.895 & 0.890 & 0.886 & 0.882 \\
-    \bottomrule
-    \end{tabular}
-\end{table}
+	      \begin{table}[ht]
+		      \centering
+		      \caption{Resultados de modelos}
+		      \label{tab:resultados-modelos}
+		      \begin{tabular}{lcccc}
+			      \toprule
+			      \textbf{Model}               & \textbf{Acc} & \textbf{Precision} & \textbf{Recall} & \textbf{F1 Score} \\
+			      \midrule
+			      BiLSTM-CRF                   & 0.805        & 0.790              & 0.778           & 0.784             \\
+			      Roberta-BiLSTM               & 0.832        & 0.835              & 0.841           & 0.843             \\
+			      Roberta-Attention-BiLSTM     & 0.808        & 0.800              & 0.807           & 0.809             \\
+			      Roberta-BiLSTM-CRF           & 0.869        & 0.867              & 0.853           & 0.865             \\
+			      BERT-BiLSTM-CRF              & 0.865        & 0.867              & 0.863           & 0.865             \\
+			      Roberta -LSTM-CRF            & 0.855        & 0.878              & 0.832           & 0.845             \\
+			      BERT-Attention-BiLSTM-CRF    & 0.886        & 0.881              & 0.875           & 0.871             \\
+			      Roberta-Attention-BiLSTM-CRF & 0.895        & 0.890              & 0.886           & 0.882             \\
+			      \bottomrule
+		      \end{tabular}
+	      \end{table}
 
-\item \textbf{A Natural Language Understanding Approach for Digitizing
-Aircraft Ground Taxi Instructions} \cite{doi:10.2514/6.2024-4359}
+	\item \textbf{A Natural Language Understanding Approach for Digitizing
+		      Aircraft Ground Taxi Instructions} \cite{doi:10.2514/6.2024-4359}
 
-Este estudio surge de la necesidad de descongestionar las comunicaciones de radio de los ATC, pero es aplicable a nuestro problema. 
-Se utiliza el esquema que llaman \textit{Intent Classification} + \textit{Slot Filling}. El primero proporciona lo que sería la etiqueta de comando en los modelos anteriores, mientras que el \textit{Slot Filling} rellena el resto de parámetros (valores y \textit{callsign}).
+	      Este estudio surge de la necesidad de descongestionar las comunicaciones de radio de los ATC, pero es aplicable a nuestro problema.
+	      Se utiliza el esquema que llaman \textit{Intent Classification} + \textit{Slot Filling}. El primero proporciona lo que sería la etiqueta de comando en los modelos anteriores, mientras que el \textit{Slot Filling} rellena el resto de parámetros (valores y \textit{callsign}).
 \end{enumerate}
 
-\begin{table}[h]
-    \centering
-    \caption{Comparación de Soluciones de Extracción (Parsing) de Instrucciones ATC}
-    \label{tab:comparacion_parsing_ATC}
-    \footnotesize
-    \begin{tabular}{|l|p{3.8cm}|p{3.8cm}|p{3.8cm}|}
-    \hline
-    \textbf{Aspecto} & \textbf{\cite{doi:10.2514/6.2024-4359}} & \textbf{\cite{Zuluaga-Gomez2023Virtual}} & \textbf{\cite{aerospace12050376}} \\
-    \hline
-    \textbf{Metodología de Extracción} & Comprensión del Lenguaje Natural (NLU) utilizando \textbf{Clasificación de Intención (IC)} y \textbf{Relleno de Slots (SF)} [1, 2]. & Comprensión del Lenguaje Natural (NLU) utilizando un \textbf{Análisis de Entidades de Alto Nivel} (similar a NER/Slot Filling) [3, 4]. & \textbf{Extracción de Palabras Clave} para identificar términos/frases que revelan el contenido central de las instrucciones [5, 6]. \\
-    \hline
-    \textbf{Arquitectura Clave} & Modelo \textbf{Long Short-Term Memory (LSTM) multitarea bidireccional (BiLSTM)} [7, 8]. \textbf{Modelo Ligero} ($\approx 0.5$ millones de parámetros) [9]. & Modelo \textbf{BERT} preentrenado y ajustado (*fine-tuned*) para la tarea de Reconocimiento de Entidades Nombradas (NER) [4, 10]. & Modelo \textbf{Roberta-Attention-BiLSTM-CRF (RABC)} [5, 11]. Utiliza Roberta como base semántica [12]. \\
-    \hline
-    \textbf{Elementos Extraídos} & \textbf{Tipos de Comando (Intents)} (p. ej., \texttt{Go to}, \texttt{Hold}) y \textbf{Calificadores (Slots)} (p. ej., \texttt{Taxi route}, \texttt{Spot (AEP)}, \texttt{Callsign}) [2, 13-15]. & \textbf{Callsigns}, \textbf{Commands} (Detección de intención) y \textbf{Values} (Valores) [16, 17]. & Palabras clave estructuradas: \textbf{Callsign}, \textbf{ATC Area Code}, \textbf{Instruction Action}, y \textbf{Object of Action} [6, 18, 19]. \\
-    \hline
-    \textbf{Scores de Rendimiento Clave} & \textbf{Macro $\mathcal{F}1$ (NLU):} IC (ATCo-only): $\mathbf{84.1\%}$ [25]. SF (ATCo+Pilot): $\mathbf{85.5\%}$ [25]. Micro $\mathcal{F}1$: $\approx \mathbf{94.3\%}$ (SF, ATCo+Pilot) [25]. & \textbf{F1 Score (Por Entidad):} Callsign: $\mathbf{97.5\%}$ [26]. Values: $87.2\%$ [26]. Command: $82.0\%$ [26]. & \textbf{Accuracy General:} $\mathbf{89.5\%}$ [5, 27]. \textbf{F1 Score:} $\mathbf{88.2\%}$ [5, 27]. \textbf{Accuracy de Coincidencia de Secuencia:} $\mathbf{91.3\%}$ [5, 28]. \\
-    \hline
-    \end{tabular}
+\begin{table}[ht]
+	\centering
+	\caption{Comparación de Soluciones de Extracción (Parsing) de Instrucciones ATC}
+	\label{tab:comparacion_parsing_ATC}
+	\footnotesize
+	\begin{tabular}{|l|p{3.8cm}|p{3.8cm}|p{3.8cm}|}
+		\hline
+		\textbf{Aspecto}                     & \textbf{\cite{doi:10.2514/6.2024-4359}}                                                                                                                                                        & \textbf{\cite{Zuluaga-Gomez2023Virtual}}                                                                                               & \textbf{\cite{aerospace12050376}}                                                                                                                                              \\
+		\hline
+		\textbf{Metodología de Extracción}   & Comprensión del Lenguaje Natural (NLU) utilizando \textbf{Clasificación de Intención (IC)} y \textbf{Relleno de Slots (SF)} [1, 2].                                                            & Comprensión del Lenguaje Natural (NLU) utilizando un \textbf{Análisis de Entidades de Alto Nivel} (similar a NER/Slot Filling) [3, 4]. & \textbf{Extracción de Palabras Clave} para identificar términos/frases que revelan el contenido central de las instrucciones [5, 6].                                           \\
+		\hline
+		\textbf{Arquitectura Clave}          & Modelo \textbf{Long Short-Term Memory (LSTM) multitarea bidireccional (BiLSTM)} [7, 8]. \textbf{Modelo Ligero} ($\approx 0.5$ millones de parámetros) [9].                                     & Modelo \textbf{BERT} preentrenado y ajustado (*fine-tuned*) para la tarea de Reconocimiento de Entidades Nombradas (NER) [4, 10].      & Modelo \textbf{Roberta-Attention-BiLSTM-CRF (RABC)} [5, 11]. Utiliza Roberta como base semántica [12].                                                                         \\
+		\hline
+		\textbf{Elementos Extraídos}         & \textbf{Tipos de Comando (Intents)} (p. ej., \texttt{Go to}, \texttt{Hold}) y \textbf{Calificadores (Slots)} (p. ej., \texttt{Taxi route}, \texttt{Spot (AEP)}, \texttt{Callsign}) [2, 13-15]. & \textbf{Callsigns}, \textbf{Commands} (Detección de intención) y \textbf{Values} (Valores) [16, 17].                                   & Palabras clave estructuradas: \textbf{Callsign}, \textbf{ATC Area Code}, \textbf{Instruction Action}, y \textbf{Object of Action} [6, 18, 19].                                 \\
+		\hline
+		\textbf{Scores de Rendimiento Clave} & \textbf{Macro $\mathcal{F}1$ (NLU):} IC (ATCo-only): $\mathbf{84.1\%}$ [25]. SF (ATCo+Pilot): $\mathbf{85.5\%}$ [25]. Micro $\mathcal{F}1$: $\approx \mathbf{94.3\%}$ (SF, ATCo+Pilot) [25].   & \textbf{F1 Score (Por Entidad):} Callsign: $\mathbf{97.5\%}$ [26]. Values: $87.2\%$ [26]. Command: $82.0\%$ [26].                      & \textbf{Accuracy General:} $\mathbf{89.5\%}$ [5, 27]. \textbf{F1 Score:} $\mathbf{88.2\%}$ [5, 27]. \textbf{Accuracy de Coincidencia de Secuencia:} $\mathbf{91.3\%}$ [5, 28]. \\
+		\hline
+	\end{tabular}
 \end{table}
 
 Hay que tener en cuenta que el problema que tenemos entre manos no tiene la desventaja de la dicción difusa, los canales de comunicación desventajados u otros similares. No estamos ante un \textit{environment} de control aéreo real, sino uno controlado, donde la calidad de la dicción puede ser tan buena como nos permita el equipamiento \textit{hardware}. Teniendo esto en cuenta:
 
 \begin{itemize}
-    \item Si nos centramos en la \textbf{ligereza y rapidez} de la solución de \textit{parsing}, la solución propuesta en \cite{doi:10.2514/6.2024-4359} parece bastante superior, pues tiene pocos parámetros y una precisión que se aproxima al 90\%.
-    \item Si priorizamos la precisión crítica, el modelo propuesto en \cite{Zuluaga-Gomez2023Virtual} puede ser aceptable, debido a su alta precisión en la detección de \textit{callsigns} (\textbf{97,5\%}).
-    \item Si decidimos sacrificar la ligereza, \cite{aerospace12050376} propone una solución muy precisa \textit{overall}.
+	\item Si nos centramos en la \textbf{ligereza y rapidez} de la solución de \textit{parsing}, la solución propuesta en \cite{doi:10.2514/6.2024-4359} parece bastante superior, pues tiene pocos parámetros y una precisión que se aproxima al 90\%.
+	\item Si priorizamos la precisión crítica, el modelo propuesto en \cite{Zuluaga-Gomez2023Virtual} puede ser aceptable, debido a su alta precisión en la detección de \textit{callsigns} (\textbf{97,5\%}).
+	\item Si decidimos sacrificar la ligereza, \cite{aerospace12050376} propone una solución muy precisa \textit{overall}.
 \end{itemize}
 
 \subsubsection{Solución ingenua: utilizar un LLM ligero}
@@ -119,19 +119,18 @@ No hay literatura reciente que los utilice, pero agilizan la comprensión del pr
 
 La solución actual utilizando procesos descritos en la literatura nos proporcionaría algo como lo que se puede ver en la Figura~\ref{fig:non-naive-solution}. Esto añade complejidad. Además de tener que centrarnos en el entendimiento correcto del \textit{Language Model} pertinente, también tendríamos que elaborar un traductor a simulador que podría no ser apropiado pues el contexto puede complicarse tanto como queramos.
 
-
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{assets/non-naive-solution.png}
-    \caption{Diagrama del proceso de extracción no ingenuo de instrucciones ATC, basado en arquitecturas propuestas en la literatura reciente.}
-    \label{fig:non-naive-solution}
+	\centering
+	\includegraphics[width=\linewidth]{assets/non-naive-solution.png}
+	\caption{Diagrama del proceso de extracción no ingenuo de instrucciones ATC, basado en arquitecturas propuestas en la literatura reciente.}
+	\label{fig:non-naive-solution}
 \end{figure}
 
 La solución con un LLM se puede visualizar en la Figura~\ref{fig:naive-solution}. Se elimina el problema de la traducción a instrucciones de interfaz del simulador de vuelo.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{assets/naive-solution.png}
-    \caption{Diagrama del proceso de extracción ingenuo de instrucciones ATC utilizando un LLM ligero. Este enfoque minimiza los módulos intermedios y delega la comprensión contextual al modelo de lenguaje.}
-    \label{fig:naive-solution}
+	\centering
+	\includegraphics[width=\linewidth]{assets/naive-solution.png}
+	\caption{Diagrama del proceso de extracción ingenuo de instrucciones ATC utilizando un LLM ligero. Este enfoque minimiza los módulos intermedios y delega la comprensión contextual al modelo de lenguaje.}
+	\label{fig:naive-solution}
 \end{figure}
