@@ -1,18 +1,57 @@
-\documentclass{article}
+\documentclass[12pt, a4paper]{book}
+
+% --- PAQUETES BÁSICOS ---
+\usepackage[utf8]{inputenc}      % Codificación de entrada UTF-8
+\usepackage[T1]{fontenc}         % Codificación de fuentes para caracteres especiales
+\usepackage[english]{babel}      % Soporte para el idioma español (acentos, guiones, etc.)
+
+\usepackage{ebgaramond}          % Fuente principal del texto (Serif, Garamond)
+\usepackage[scaled=0.9]{helvet}  % Fuente para títulos (Sans-Serif, Helvetica)
+
+% --- DISEÑO DE PÁGINA ---
+\usepackage[margin=2.5cm]{geometry} % Márgenes generosos
+\usepackage{setspace}               % Para controlar el interlineado
+\usepackage{svg}
+\svgsetup{inkscapeexe={/Applications/Inkscape.app/Contents/MacOS/inkscape}}
+\onehalfspacing                     % Interlineado de 1.5 (puedes usar \setstretch{1.2})
+
+\usepackage{titlesec}
+
+\usepackage{hyperref}            % Para crear hipervínculos (en PDF)
+
+% Formato para \chapter
+% Estilo "display": el título y el número van en párrafos separados
+\titleformat{\chapter}[display]
+  {\normalfont\sffamily\huge\bfseries\centering} % Formato para todo el bloque: Sans-Serif, huge, negrita, centrado
+  {Chapter \thechapter}                          % El texto "Chapter" + número
+  {20pt}                                         % Espacio vertical entre el número y el título
+  {\Huge}                                        % Formato solo para el nombre del capítulo (ej. "Introduction")
+
+% Formato para \section
+\titleformat{\section}
+  {\normalfont\sffamily\Large\bfseries} % Formato: Sans-Serif, Large, negrita
+  {\thesection}                         % El número de la sección
+  {1em}                                 % Espacio horizontal entre el número y el título
+  {}                                    % Código extra (no necesario aquí)
+
+
 \usepackage{csquotes}
+\usepackage{booktabs}
 \usepackage[backend=biber]{biblatex}
-\addbibresource{references.bib}
 \usepackage{graphicx} % Required for inserting images
 \usepackage{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{booktabs}
 \usepackage{tikz}
-\usepackage[spanish]{babel}
+\usetikzlibrary{positioning}
 \usepackage{xcolor}
+\usepackage{array}
+\usepackage{longtable}
 % beta 
 % \pagecolor[rgb]{0,0,0} \color[rgb]{1,1,1}
 \DeclareUnicodeCharacter{202F}{\,}
+\addbibresource{references.bib}
 
 % URL breaking configuration (biblatex already loads url package)
 \def\UrlBreaks{\do\/\do-\do_\do.\do=\do?\do&}
@@ -22,24 +61,31 @@
 % Better line breaking to handle overfull hbox
 \sloppy
 
-\title{Preliminar: TFG}
-\author{Ignacio de Miguel}
-\date{September 2025}
-
 \begin{document}
 
-\maketitle
+\input{portada.tex}
 
 \newpage
+
+\renewcommand{\normalsize}{\fontsize{14pt}{17pt}\selectfont}
+\normalsize
+
+\chapter{Introduction}
+\label{chap:intro}
+\input{introduction/driver.tex}
+
+\chapter{Related Work}
+\label{chap:related-work}
+\input{related_work/driver.tex}
 
 \section{Planteamiento inicial}
 El modelo que proponemos consiste en una \textit{pipeline} de cuatro elementos.
 \begin{enumerate}
-    \item El elemento de \textbf{captura y transcripción de voz}. En este entorno, tradicionalmente se le conoce como \textbf{ASR} (\textit{Automatic Speech Recognition}) \cite{Zuluaga-Gomez2023Virtual}.
-    \item Un conversor de lenguaje a instrucciones de alto nivel (\textit{Language Parameter and Instruction Parser}).
-    \item Un módulo de interfaz de un simulador de vuelo.
-    \item Un módulo de respuesta (\textit{Response Handler})
-    \item Un módulo de TTS (\textit{Text-to-Speech})
+	\item El elemento de \textbf{captura y transcripción de voz}. En este entorno, tradicionalmente se le conoce como \textbf{ASR} (\textit{Automatic Speech Recognition}) \cite{Zuluaga-Gomez2023Virtual}.
+	\item Un conversor de lenguaje a instrucciones de alto nivel (\textit{Language Parameter and Instruction Parser}).
+	\item Un módulo de interfaz de un simulador de vuelo.
+	\item Un módulo de respuesta (\textit{Response Handler})
+	\item Un módulo de TTS (\textit{Text-to-Speech})
 \end{enumerate}
 
 \input{sota/inicial}
