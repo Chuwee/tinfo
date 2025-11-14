@@ -1,0 +1,19 @@
+modifyLineBreaks:
+  textWrapOptions:
+    columns: 80
+    all: 1
+  oneSentencePerLine:
+    manipulateSentences: 0
+    textWrapSentences: 1
+  textWrapAllEnvironments: 1
+commands:
+  caption:
+    BeginStartsOnOwnLine: 0
+    BodyStartsOnOwnLine: 0
+    EndStartsOnOwnLine: 0
+    EndFinishesWithLineBreak: 0
+    textWrapOptions:
+      columns: 80
+items:
+  textWrapOptions:
+    columns: 80
