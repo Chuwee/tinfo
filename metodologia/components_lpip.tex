@@ -1,0 +1,154 @@
+\subsection{Language Parameter and Instruction Parser}
+This step is standard in other research papers, and thus challenges for its correct functioning are well defined. The main focus centers around problems like \textbf{variable phraseology}, where an ATCo could
+state the same instruction to an aircraft in different ways, despite the ICAO standard \cite{eurocontrol_icao_nodate}. Various instructions could then have the same intent:
+
+\begin{center}
+	\texttt{IBERIA292 maintain three five zero zero}
+
+	\texttt{IBERIA292 climb to three five zero zero}
+\end{center}
+
+An optimal \textbf{LPIP} should identify both of these as `Flight with callsign IBERIA292 should maintain an altitude of 3500 feet'.
+Other limitations, albeit more obvious, include errors in the \textbf{ASR} step of the pipeline, which might end up producing transcripts that do not align with the original intent of the message (this is where our \textbf{Context Database} will come in handy later).
+Take the following transcription:
+
+\begin{center}
+	\texttt{IBERIA292 climb to three five oh oh}
+\end{center}
+
+This alternative formulation could show up in callsigns or in values. Failing to interpret these correctly means compromising the whole pipeline.
+
+Additionally, callsigns contain information which could (from a parsing perspective), be confused with command values. Of course, this also adds a single point of failure, as failing to get the callsign correctly makes the instruction assignment be faulty.
+This could be a problem with transcriptions like:
+\begin{center}
+	\texttt{Iberia two nine two zero heading}
+\end{center}
+
+Without a context, it's difficult to know where the callsign ends and the values for the instruction begin. Other problems include multiple parameters in the same instruction:
+\begin{center}
+	\texttt{climb to FL350, turn left heading 090, speed 250}
+\end{center}
+Making it impossible for traditional parsers to correctly partitionate the message with one concrete command per each instruction. While we might experience multiple commands per instruction,
+we also might experience multiples commands per instruction followed by a temporal structure of said commands. It is also crucial to represent these correctly:
+\begin{center}
+	\texttt{climb to FL350, after reaching point X descend to 3000}
+\end{center}
+
+A normalization of the units and instruction parameters is also necessary. \texttt{FL350}, \texttt{flight Level three five zero} or simply \texttt{three five zero} are distinct yet equivalent
+ways of saying `35,000 feet'. Spontaneity and self-correction within instructions is to be expected as well, as one instruction may contain elements which are hierarchically superior to others.
+\begin{center}
+	\texttt{Iberia two nine turn leaft heading 045, umm, sorry, 090}
+\end{center}
+
+While these problems do pose major challenges, current advances in research have made an effort to mitigate them. In \cite{Zuluaga-Gomez2023Virtual}, researchers present a `High Level Entity Parser' module.
+Each and every one of the transcribed instructions are passed as input to this parser, where fields present in every ATC instruction are extracted. Each of these fields is called a `Named entity'. The recognition
+of said entities is called `Named Entity Recognition'. Each named entity can fall in one of three categories: `callsign' or identifier of an aircraft; `command', which is the basic verb associated to the instruction and `value',
+which indicates the magnitude of the extent to which the command is to be executed.
+
+This way, a transcription like
+\begin{center}
+	\texttt{ryanair nine two bravo quebec turn right heading zero nine zero}
+\end{center}
+Is parsed and transformed with this NLP, identifying its named entities, with its output being \texttt{<callsign>\textcolor{blue}{ryanair nine two bravo quebec}</callsign>
+	<command>\textcolor{red}{turn right heading}</command><value>\textcolor{green}{zero nine zero}</value>}
+
+For this task, a pre-trained language model is used, fine-tuning it for this NER task. The model used was BERT~\cite{devlin2019bertpretrainingdeepbidirectional}. The model was tuned
+using the previously described ATCO2 corpus \cite{ATCO2_EndToEndCallsignRecognition2021}. This dataset is highly convenient for the Named Entity Recognition task, as data is already presented
+in a named entity format. Result-wise, BERT achieved a precision of 97.5\% in callsign detection, while achieving 82\% in commands and 87.2\% in values.
+
+This method, however, failed to capture contextual dependencies within segments of an ATC communication. There was a difficulty to maintain the correct sequence for keywords. There was an attempt to
+solve this by \cite{aerospace12050376}, proposing a new model: `Roberta-Attention-BiLSTM-CRF'. Previous models could only capture dependencies within the same instruction or instruction segment. This new model
+can capture semantic relevance throughout several instruction segments.
+
+An attention module is used, allowing them to capture the relation between sequential instructions. The `BiLSTM' stands for Bidirectional Long Short-Term Memory, which is used to capture contextual dependencies of used terms.
+
+The CRF layer (Conditional Random Field) attempts to predict keywords in the correct sequential order. It establishes sequential dependencies between multiple keywords. Similarly to \cite{Zuluaga-Gomez2023Virtual}, this approach
+parses each ATC instruction in named entities such as `callsigns', `commands' and `values'. A new named entity is added, the `area code', which represents the airspace or control area. Consider the transcription
+
+\begin{center}
+	\texttt{UAL215, Barajas Tower, cleared for take off, then contact departures}
+\end{center}
+
+Without CRF or Attention Module, BERT could interpret the remaining text after `Barajas Tower' as one single instruction. Even if BERT was to correctly identify both instructions as separate ones,
+there's still the matter of sequentiality, which BERT could mistakenly rearrange. Without contextual bidirectionality, we are also not guaranteed to maintain the callsign to which a controller refers.
+
+In terms of results, Roberta-Attention-BiLSTM-CRF surpasses any other pre-existing model with similar configurations. In terms of precision of named entity extraction, the accuracy is approximately of \textbf{0.9}.
+The individual effectiveness of each component is evidenced by the increase of this accuracy score with the addition of said individual components in each iteration. Table~\ref{tab:resultados-modelos} showcases this
+phenomenon.
+
+\begin{table}[ht]
+	\centering
+	\caption{Model result}
+	\label{tab:resultados-modelos}
+	\begin{tabular}{lcccc}
+		\toprule
+		\textbf{Model}               & \textbf{Acc} \\
+		\midrule
+		BiLSTM-CRF                   & 0.805        \\
+		Roberta-BiLSTM               & 0.832        \\
+		Roberta-Attention-BiLSTM     & 0.808        \\
+		Roberta-BiLSTM-CRF           & 0.869        \\
+		BERT-BiLSTM-CRF              & 0.865        \\
+		Roberta -LSTM-CRF            & 0.855        \\
+		BERT-Attention-BiLSTM-CRF    & 0.886        \\
+		Roberta-Attention-BiLSTM-CRF & 0.895        \\
+		\bottomrule
+	\end{tabular}
+\end{table}
+
+The research showcased in \cite{doi:10.2514/6.2024-4359} emerges from the necessity to decongest the ATC radio communications. Nonetheless, it is aplicable to our situation.
+Researchers use an \textit{Intent Classification} + \textit{Slot Filling} system. The first one gives us what we have previously called
+`Named Entity Recognition for Commands' while the latter gives the `Named Entity Recognition for Callsign and Values'.
+
+More recent research in the field of Small Language Models~\cite{belcak2025smalllanguagemodelsfuture}~\cite{AguileraEnhancingAviation2024}
+suggests High Level Language Parsing could be better performed by a model which acts as a `black box' with context and instructions.
+
+The problem we face does not have the disadvantage of unclear diction. Communication channels are to be controlled, as the ATC environment is not a real one.
+Taking into account all previous research, it seems reasonable to suppose we need to parse the three main elements: `callsign', `command', `values'~\cite{Zuluaga-Gomez2023Virtual}~\cite{doi:10.2514/6.2024-4359} from the ASR output.
+We also need a deeper understanding of the bidirectional context rather than just a parser, as evidenced by \cite{aerospace12050376}.
+
+With all of this in mind and given that the scope of this research, it seems reasonable that choosing a \textbf{Small Language Model}, is the most appropriate
+of solutions. Specifically, a model like \textbf{GPT-4o-mini}, with an OpenAI API. The choice of this model is justified with its dominion in the benchmarks~\cite{OpenAIGPT4omini2024}.
+This solution also allows us to implement an all-in-one approach, where this SLM would also generate response candidates and pass them to the response generator. This solution allows us to leverage **structured outputs (JSON)** natively, eliminating the need for complex regex post-processing required by NER models. Furthermore, its 'zero-shot' reasoning capabilities provide the resilience needed to handle disfluencies and self-corrections without specific fine-tuning.
+
+The traditional architecture would result in a similar schema to the one visible in Figure~\ref{fig:non-naive-solution}, while the one we propose would result in a simpler operation, like the one described
+in Figure~\ref{fig:naive-solution}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{assets/non-naive-approach/non-naive-approach.png}
+	\caption{Method discussed in recent literature for language parsing, described in a diagram}
+	\label{fig:non-naive-solution}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\linewidth]{assets/naive-approach/naive-approach.png}
+	\caption{Method using an LPIP module whose main component is GPT-4o-mini (or any other Small Language Model)}
+	\label{fig:naive-solution}
+\end{figure}
+
+As seen in Figure~\ref{fig:naive-solution}, we are finally ready to talk about the \textbf{Context Database}. To finalize this section, we
+present the prompt with which we feed the Small Language Model. This prompt must make the language model transform the input into a \texttt{json} object with the format in
+Listing~\ref{lst:system-prompt}
+
+\begin{lstlisting}[language=json, caption={System Prompt for LPIP}, label={lst:system-prompt}]
+You are an ATC instruction parser.
+Your task is to extract:
+1. Callsign (normalized).
+2. Command (CLIMB, TURN, CONTACT, etc.).
+3. Value (normalized to integer).
+
+You must also construct reasonable response messages (readbacks), where you have creative freedom:
+1. success_msg: The standard readback if the instruction is understood.
+2. error_msg: The response if the instruction is invalid or ambiguous.
+
+Output must be strictly JSON format:
+{
+	"callsign": "IBE292",
+	"command": "CLIMB",
+	"value": 35000,
+	"success_msg": "Roger that, IBE292 climbing to 35000 feet",
+	"error_msg": "Station calling, say again, instruction unclear"
+}
+\end{lstlisting}

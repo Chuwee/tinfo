@@ -1,4 +1,4 @@
-\section{Related work}
+\section{The pseudo-pilot paradigm}
 One of the aspects of ATC training involves the \textbf{simulation} of training scenarios.
 
 Current training sessions for ATC consist of two individuals that communicate with each other \cite{eurocontrol:remote-piloting-2021}.
@@ -16,9 +16,9 @@ by simulating multiple aircrafts at the same time.
 Generally speaking, every conventional pseudo-pilot system follows a working schema like the one described in
 Figure~\ref{fig:pseudopiloto-convencional}
 
-\begin{figure}[]
+\begin{figure}[htbp]
 	\centering
-	\includegraphics[width=1\linewidth]{assets/conventional-atc-diagram/traditional-pseudopilot.drawio.png}
+	\includegraphics[width=1.1\linewidth]{assets/conventional-atc-diagram/unnamed.png}
 	\caption{Schema of a conventional pseudopilot. The ATC emits instructions via voice communication channels and the pseudopilot executes them in the simulator. Finally, the simulation framework returns the feedback to the aspiring ATC.}
 	\label{fig:pseudopiloto-convencional}
 \end{figure}
@@ -27,12 +27,14 @@ A traditional pseudo-pilot typically includes a \textbf{Pseudo-pilot working pos
 
 A Voice Communication System is also in place, allowing the pseudo-pilot to communicate with the trainee ATC using realistic aviation phraseology. Lastly, the \textbf{traffic generation software} generates traffic and complex situations automatically for their resolution by the ATC.
 
+\section{Commercial State of the Art}
+
 In order to understand the context in which our proposal makes a difference, it is crucial to comprehend the current status of the pseudo-piloting industry.
 In more broad terms, we need to understand what the industry currently offers regarding ATC training. These systems define the industry standard and the tools that are used
 today by human pseudo-pilots. Table~\ref{tab:simuladores_pp} offers a comparative view of these tools.
 
 \begin{center}
-	\begin{longtable}{>{\bfseries}p{3.0cm}|p{3.0cm}|p{3.0cm}|p{4.5cm}}
+	\begin{longtable}{>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{3.0cm}|>{\raggedright\arraybackslash}p{4.5cm}}
 		\caption{Pseudo-pilot simulators summary}
 		\label{tab:simuladores_pp}
 		\\
@@ -41,7 +43,7 @@ today by human pseudo-pilots. Table~\ref{tab:simuladores_pp} offers a comparativ
 		\midrule
 		\endfirsthead
 		\multicolumn{4}{c}%
-		{{\bfseries \tablename\ \thetable{} -- Continuation of Pseudo-pilot simulators summary}}                                                                                                                                          \\
+		{{\bfseries \tablename\ \thetable{} -- Pseudo-pilot simulators summary (Continued)}}                                                                                                                                              \\
 		\toprule
 		\textbf{Simulator (Provider)} & \textbf{Primary focus}                      & \textbf{Pseudo-pilot module}        & \textbf{Characteristics}                                                                                      \\
 		\midrule
@@ -71,6 +73,8 @@ As we can see, solutions focus mainly on the features of each simulation softwar
 Even more modern AI-using tools like SERA apply it to manage communications, and not for the execution of the ATC instructions. This Commercial State of the Art analysis shows that the current industry depends on a human agent for command execution. None of these platforms offers the ideal execution by voice, essentially removing the
 need for a human pseudopilot. This hints at the opportunity of the integration we propose.
 
+\section{Research}
+
 Although commercial solutions have not made any approaches that would resemble our proposal, the scientific literature has made some advances in the task of the pseudo-pilot automatization.
 
 The idea of a completely autonomous pseudo-pilot system is not entirely novel. In 2005, Bolczak et al. \cite{bolczak2005accommodating} already proposed a proof of concept that integrated primitive ASR and TTS modules.
@@ -79,44 +83,16 @@ This early work was crucial, as it demonstrated a theoretical viability in autom
 Recently, advances in the technologies used in \cite{bolczak2005accommodating} have caused a resurgence in the interest to automatize the pseudo-pilot. Lin et al. \cite{LinEtAl} propose the start of a more modular approach, where we firstly focus on
 response generation for a pseudopilot. This would cause the human pseudo-pilot to only have to fulfill the ATC's instructions onto the flight simulation interface.
 
-Later research by Zuluaga-Gomez et al. \cite{Zuluaga-Gomez2023Virtual} provides a proof of concept that shows the automatization of the pseudo-pilot replies is possible. This means the pseudo-pilot would need to do less work, but it doesn't quite automate the full process. This begins to close the gap between the full automatization and the current state of the commercial systems.
+Later research by Zuluaga-Gomez et al.~\cite{Zuluaga-Gomez2023Virtual} provides a proof of concept that shows the automatization of the pseudo-pilot replies is possible. This means the pseudo-pilot would need to do less work, but it doesn't quite automate the full process. This begins to close the gap between the full automatization and the current state of the commercial systems.
 
-\subsection{Literatura y soluciones alternativas}
-\begin{itemize}
-	\item \cite{Zuluaga-Gomez2023Virtual}
-	      proporciona una prueba de concepto que demuestra que se puede cambiar el paradigma actual a uno de (por lo menos) automatización de la respuesta del controlador. Esto supone una liberación de carga, pero no la automatización del proceso completo. Las tasas de error en sistemas como ASR y construcción de respuestas (WER) evolucionan cada vez más a un nivel aceptable.
-\end{itemize}
-
-En definitiva, se ha llegado a un modelo como lo que se puede ver en la Figura~\ref{fig:pseudopiloto-respuesta-convencional}. Proporciona los procesos de automatización de respuesta, pero no de ejecución de instrucciones.
-
+With the aforementioned in mind, we have arrived at the model described by Figure~\ref{fig:pseudopiloto-respuesta-convencional}
 \begin{figure}[htbp]
 	\centering
-	\includesvg[width=1\textwidth]{assets/diagram_semiautomated/diagrama.svg}
-	\caption{Esquema semiautomatizado propuesto para el proceso de pseudopilotaje, integrando módulos automáticos y respuesta supervisada.}
+	\includegraphics[width=1\textwidth]{assets/diagram_semiautomated/semiauto.png}
+	\caption{Semi-automated schema proposed for the pseudo-piloting process. This integrates a supervised response module.}
 	\label{fig:pseudopiloto-respuesta-convencional}
 \end{figure}
 
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=1\textwidth]{assets/pseudopilot-semithere.png}
-	\caption{Esquema semiautomatizado propuesto para el proceso de pseudopilotaje, integrando módulos automáticos y respuesta supervisada.}
-	\label{fig:pseudopiloto-respuesta-convencional}
-\end{figure}
+This begins to close the gap between the full automatization and the current state of commercial systems.
 
-\subsection{Propuesta actual}
-Nosotros proponemos un modelo que da un paso más, replicando el diagrama propuesto en la Figura~\ref{fig:pseudopiloto-full-auto}
-
-\begin{figure}[htbp]
-	\centering
-	\includegraphics[width=1\textwidth]{assets/pseudo-full-auto.png}
-	\caption{Esquema de pseudopilotaje completamente automatizado: el sistema recibe transmisiones de voz del controlador, las procesa mediante módulos ASR, comprensión de instrucciones y ejecuta acciones en el simulador de vuelo de forma autónoma, generando respuestas (TTS) sin intervención humana.}
-	\label{fig:pseudopiloto-full-auto}
-\end{figure}
-
-Esto proporciona una eliminación del componente humano, proporcionando ciertas ventajas:
-\begin{enumerate}
-	\item Menor requerimiento de esfuerzo humano para entrenar ATCs.
-	\item Mayor capacidad para escalar las simulaciones, permitiendo situaciones de control aéreo de un gran número de aeronaves sin apenas esfuerzo.
-	\item Plausible autonomía del pseudopiloto para complicar escenarios de control aéreo.
-	\item Mecanismo de validación automática para métodos de control aéreo.
-\end{enumerate}
+The current SOTA is moving towards a paradigm that fully automates this system. Our proposal directly aligns with the direction in which the research is going, proposing a way to close the loop by directing instructions to a \textbf{Flightgear simulation interface}.

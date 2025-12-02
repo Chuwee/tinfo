@@ -6,18 +6,52 @@
 \usepackage[english]{babel}      % Soporte para el idioma español (acentos, guiones, etc.)
 
 \usepackage{ebgaramond}          % Fuente principal del texto (Serif, Garamond)
+\usepackage{listings}
 \usepackage[scaled=0.9]{helvet}  % Fuente para títulos (Sans-Serif, Helvetica)
 
 % --- DISEÑO DE PÁGINA ---
 \usepackage[margin=2.5cm]{geometry} % Márgenes generosos
 \usepackage{setspace}               % Para controlar el interlineado
 \usepackage{svg}
-\svgsetup{inkscapeexe={/Applications/Inkscape.app/Contents/MacOS/inkscape}}
-\onehalfspacing                     % Interlineado de 1.5 (puedes usar \setstretch{1.2})
-
+\onehalfspacing
 \usepackage{titlesec}
 
 \usepackage{hyperref}            % Para crear hipervínculos (en PDF)
+
+\colorlet{punct}{red!60!black}
+\definecolor{background}{HTML}{EEEEEE}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+
+\lstdefinelanguage{json}{
+    basicstyle=\normalfont\ttfamily,
+    numbers=none,
+    numberstyle=\scriptsize,
+    stepnumber=1,
+    numbersep=8pt,
+    showstringspaces=false,
+    breaklines=true,
+    frame=lines,
+    backgroundcolor=\color{background},
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1},
+}
 
 % Formato para \chapter
 % Estilo "display": el título y el número van en párrafos separados
@@ -39,15 +73,14 @@
 \usepackage{booktabs}
 \usepackage[backend=biber]{biblatex}
 \usepackage{graphicx} % Required for inserting images
-\usepackage{geometry}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{booktabs}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
 \usepackage{xcolor}
 \usepackage{array}
 \usepackage{longtable}
+\usepackage{microtype} % Improves text justification and reduces underfull/overfull boxes
 % beta 
 % \pagecolor[rgb]{0,0,0} \color[rgb]{1,1,1}
 \DeclareUnicodeCharacter{202F}{\,}
@@ -61,6 +94,11 @@
 % Better line breaking to handle overfull hbox
 \sloppy
 
+% Hyphenation hints for technical terms
+\hyphenation{Ro-ber-ta-At-ten-tion-Bi-LSTM-CRF}
+\hyphenation{pseudo-pilot pseudo-pilots pseudo-pi-lot-ing}
+\hyphenation{Bi-LSTM}
+
 \begin{document}
 
 \input{portada.tex}
@@ -70,44 +108,17 @@
 \renewcommand{\normalsize}{\fontsize{14pt}{17pt}\selectfont}
 \normalsize
 
-\chapter{Introduction}
-\label{chap:intro}
+\chapter{Introduction}\label{chap:intro}
 \input{introduction/driver.tex}
 
-\chapter{Related Work}
-\label{chap:related-work}
-\input{related_work/driver.tex}
-
-\section{Planteamiento inicial}
-El modelo que proponemos consiste en una \textit{pipeline} de cuatro elementos.
-\begin{enumerate}
-	\item El elemento de \textbf{captura y transcripción de voz}. En este entorno, tradicionalmente se le conoce como \textbf{ASR} (\textit{Automatic Speech Recognition}) \cite{Zuluaga-Gomez2023Virtual}.
-	\item Un conversor de lenguaje a instrucciones de alto nivel (\textit{Language Parameter and Instruction Parser}).
-	\item Un módulo de interfaz de un simulador de vuelo.
-	\item Un módulo de respuesta (\textit{Response Handler})
-	\item Un módulo de TTS (\textit{Text-to-Speech})
-\end{enumerate}
-
-\input{sota/inicial}
-
-\subsection{\textit{Automatic Speech Recognition} (ASR)}
-
-\input{sota/asr/desafios}
-
-\input{sota/asr/datasets}
-
-\input{sota/asr/soluciones}
-
-\subsection{\textit{Language Parameter and Instruction Parser} (LPIP)}
-
-\input{sota/LPIP/desafios}
-
-\input{sota/LPIP/soluciones}
-
-\input{piloto-automatico}
-\newpage
+\chapter{Related Work}\label{chap:related-work}
 
 \input{SOTA_pseudo/sota_pseudo}
+
+\newpage
+\chapter{Design and methodology}
+\input{metodologia/driver.tex}
+
 \clearpage
 \printbibliography
 \end{document}

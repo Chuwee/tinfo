@@ -1,0 +1,33 @@
+\subsection{ASR Module}
+As we have already specified, the ASR serves as the pseudo-pilot's `ears'. Its performance is critical for the entire pipeline. If not handled correctly, this could constitute a single point of failure for the whole pseudopilot architecture. Significant challenges are present when we consider the domain of ATC problems.
+
+Current research in the `ASR for ATC' field takes into account several challenges such as \textbf{noise}, since traditional ATC communications run on modulated amplitude~\cite{WhatRadioEquipmentPilotsUseToCommunicateWithATC2018}. So-known `Very High Frequency' receptors are very susceptible to a low Signal-to-Noise ratio \cite{ZuluagaGomez2023Lessons} \cite{ChenKopaldMaTarakanWei2021ATCSpeechRecognition}, present in ATC communications.
+Luckily for us, the problem we tackle need not have this constraint, as we would be running a simulated environment where there's no need to use modulated amplitude.
+Other challenges in the area of \textbf{language differences, as well as accents and pronunciations} are also negligible for our current purposes, as we will consider the pseudo-pilot handles all communications in \textbf{english}. It is important to note, however, that these challenges do exist \cite{SimpleFlying_NonEnglishATCPilotCommunicationsGuide} \cite{wee2024adapting}.
+
+Other conventional challenges do suppose crucial points to consider. Current ASR models have a wide variety of usages, and \textbf{aeronautical phraseology} could be, in some cases, too convoluted for these models. Terms like `callsign', or `runway' could not coincide with the target language registry of conventional models \cite{ZuluagaGomez2024ATCO2} \cite{Fan2024CustomizationASR}.
+
+Finally, we must consider this model's lack of resilience: a failure in any of the transcript supposes wrong instructions being fed into the pseudo-pilot, and thus not being useful for the ATC training \cite{ZuluagaGomez2021Contextual} \cite{ATCO2_EndToEndCallsignRecognition2021}.
+
+This leaves us two main problems to solve, or rather, two aspects we would like to have in our ASR module. Namely, we want it to \textbf{minimize errors per word} and be \textbf{resilient, resisting to transcription mistakes}.
+
+For the first problem, the metric of \textbf{WER} (Word Error Rate) is useful. It's defined as seen in Equation~\ref{eq:wer}
+
+\begin{equation}\label{eq:wer}
+	WER = \frac{S + D + I}{N}
+\end{equation}
+
+Where $S$ are substitutions (words confused with others), $D$ are deletions (words not detected at all), $I$ are insertions (non-existent words inserted into the transcription) and $N$ is the total number of words in the original recording.
+
+In order to obtain models with a low WER, researchers use the \textbf{ATCO2 Corpus} \cite{ATCO2_EndToEndCallsignRecognition2021} as the most relevant dataset. It's a standardized ecosystem, consistent of, namely, the \textit{ATCO2-test-set corpus} (four hours of checked transcriptions, marks with speaker roles [\texttt{<pilot>...<pilot>}, etc.] as well as other tags that mark communication elements\ldots) and the \textit{ATCO2 pseudo-labeled set corpus} (approximately 5281 hours of ATC audio, with metadata like english detection scores, trust scores or SNR; contextual data and ASR-made transcriptions which may or may not be correct).
+Researchers also mention \textbf{ATCOSIM Corpus} \cite{hofbauer-etal-2008-atcosim}, which consists of 10 hours of ATC recordings, in english and pronounced by native english speakers.
+
+Other solutions like Librispeech \cite{panayotov2015librispeech} or TED-LIUM \cite{hernandez2018ted} proved to not be `challenging' enough to train ATC-domain ASR. Some sample results of training can be seen in \cite{ATCO2_EndToEndCallsignRecognition2021}, which are around 0.22 (not considering our negligible environment).
+
+Research in \cite{Zuluaga-Gomez2023Virtual} attempts to tackle this problem using Open Source tools. Zuluaga et. al propose the use of \textbf{Wav2Vec2.0}, as well as \textbf{XLSR} (\textit{Cross-Language Speech Recognition}). As we already discussed, XLSR doesn't seem reasonable for our current problem setting, and thus the replication of this paper doesn't seem entirely fitting for our purposes.
+
+Other research such as~\cite{vanDoorn2023} proposes fine-tuning OpenAI's Whisper \cite{OpenAI_Whisper_2022} using the formerly mentioned \textbf{ATCO2} and \textbf{ATCOSIM} datasets. This research is fully reproducible by us, (except maybe for the fine-tuning, which requires high level hardware) since the method is described in detail in the paper. With methods of normalization and prompting, the ASR shows promising results of around a 0.1 WER for some datasets.
+
+In contrast, the problem of \textbf{resilience} cannot be solved by the ASR model itself, as there's no way the ASR model could "monitor itself", and as such will be solved later with other component (\textbf{Context Database}).
+
+Taking all of this into account, we have decided to use Whisper Large v2, trained on ATCO2 and ATCOSIM, with an expected WER of around $0.12$.

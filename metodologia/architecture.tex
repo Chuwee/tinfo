@@ -1,0 +1,25 @@
+Based on our previous analysis of the State of the Art, we can now move on to our proposal, which \textbf{aims to fully close the gap between the partially automated system and a fully automated one}
+
+Up until now, a pseudopilot is required in order to transform the trainee ATC's instructions into real, inputtable information for a flight simulation engine. We propose an architecture consisting of two main components.
+
+As established in Chapter~\ref{chap:related-work}, the lack of automated execution is the only aspect separating current implementations of the full automation. We address this by proposing an architecture like the one portrayed in Figure~\ref{fig:full-auto-pseudopilot}
+
+\begin{figure}[htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{assets/diagram_proposal/proposal.png}
+	\caption{Fully automated pseudo-piloting system. The Trainee ATC first inputs some instructions via voice, which then get sent to an ASR module to transform said instructions into text. The output of this transformation is then fed into a Language Parameter and Instruction Parser module, which reads from a context database in order to improve parsing accuracy.
+		The parsed instructions then get fed into a Pseudopilot Instruction Execution Module, which communicates with a Flight Simulation Engine. The feedback from said engine is then converted into a response via the Response Builder module, which is then transformed into a speech output via a TTS module. This speech output is presented to the Trainee ATC, finalizing the loop.}
+	\label{fig:full-auto-pseudopilot}
+\end{figure}
+
+This system is designed as a sequential pipeline of events, starting by the instructions emitted by the ATC, and ending in feedback presented to the same individual. The system is composed by the following key modules:
+
+\begin{enumerate}
+	\item \textbf{Automatic Speech Recoginition (ASR)} or \textbf{Voice Recognition}: the pseudo-pilot's ears. This module's key and only role is to transform voice input into raw text, which will be parsed by the LPIP.
+	\item \textbf{(Optional) Context Database}: allows the pseudo-pilot to remember the current state of the aircrafts: their callsigns, the last instructions given to them, etc.
+	\item \textbf{Language Parameter and Instruction Parser (LPIP)}: this module extracts the main elements necessary to execute an instruction. These are, namely, the \textbf{callsign}, \textbf{instruction} and \textbf{parameters/values}. It can also read from the \textbf{Context Database} to resolve faulty voice recognition outputs.
+	\item \textbf{Pseudopilot Instruction Execution Module (PIEM)}: serves as the interface that connects the instructions of the ATC to the flight simulation engine. It reads feedback from this same engine and can use it to update the \textbf{Context Database} if present.
+	\item \textbf{Flight Simulation Engine}: receives instructions from the \textbf{PIEM} and sends back feedback on the affected aircraft.
+	\item \textbf{Response Builder}: processes feedback received by the \textbf{PIEM} and converts it into raw text containing the response addressed to the ATC.
+	\item \textbf{Text-to-speech}: transforms the response's raw text into a speech response, which will be heard by the \textbf{ATC}.
+\end{enumerate}
